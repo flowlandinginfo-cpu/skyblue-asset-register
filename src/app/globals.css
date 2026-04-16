@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+    font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  /* Status badges */
+  .badge-active   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800; }
+  .badge-repair   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800; }
+  .badge-inactive { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800; }
+
+  /* Form fields */
+  .field-label  { @apply block text-sm font-medium text-gray-700 mb-1; }
+  .field-input  { @apply w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-skyblue-500 focus:border-transparent; }
+  .field-error  { @apply mt-1 text-sm text-red-600; }
+  .field-helper { @apply mt-1 text-sm text-gray-500; }
+
+  /* Buttons */
+  .btn-primary   { @apply inline-flex items-center gap-2 px-5 py-2.5 bg-skyblue-600 text-white font-medium rounded-lg hover:bg-skyblue-700 transition-colors; }
+  .btn-secondary { @apply inline-flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors; }
+  .btn-danger    { @apply inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors; }
+
+  /* Card */
+  .card { @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6; }
+}
