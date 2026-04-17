@@ -3,19 +3,20 @@
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { useState } from 'react'
+import { useState, use } from 'react'
 import { useAsset, useUpdateAsset, useUploadAssetFile } from '@/lib/hooks/useAssets'
 import { AssetForm } from '@/components/forms/AssetForm'
 import { Spinner } from '@/components/ui/Spinner'
 import type { AssetFormData } from '@/types/asset'
 
-export default function EditAssetPage({ params }: { params: { id: string } }) {
+export default function EditAssetPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState<string | null>(null)
 
-  const { data: asset, isLoading } = useAsset(params.id)
-  const updateAsset = useUpdateAsset(params.id)
+  const { data: asset, isLoading } = useAsset(id)
+  const updateAsset = useUpdateAsset(id)
   const uploadFile  = useUploadAssetFile()
 
   if (isLoading) return <Spinner />
@@ -49,11 +50,11 @@ export default function EditAssetPage({ params }: { params: { id: string } }) {
       // Upload new files (if any added)
       for (const file of files) {
         await uploadFile.mutateAsync({
-          assetId: params.id, file, isMain: false,
+          assetId: id, file, isMain: false,
         })
       }
 
-      router.push(`/assets/${params.id}`)
+      router.push(`/assets/${id}`)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
     } finally {
@@ -65,7 +66,7 @@ export default function EditAssetPage({ params }: { params: { id: string } }) {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
-          <Link href={`/assets/${params.id}`} className="text-gray-500 hover:text-gray-700">
+          <Link href={`/assets/${id}`} className="text-gray-500 hover:text-gray-700">
             <ArrowLeft size={20} />
           </Link>
           <div>
@@ -83,8 +84,8 @@ export default function EditAssetPage({ params }: { params: { id: string } }) {
         )}
         <AssetForm
           mode="edit"
-          assetId={params.id}
-          defaultValues={asset}
+          assetId={id}
+          defaultValues={asset as any}
           onSubmit={handleSubmit}
           loading={loading}
         />

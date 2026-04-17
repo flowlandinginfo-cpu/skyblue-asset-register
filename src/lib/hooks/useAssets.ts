@@ -44,7 +44,7 @@ export function useAssets(filters: AssetFilters = {}) {
 
       const { data, error } = await query
       if (error) throw error
-      return data ?? []
+      return (data ?? []) as unknown as Asset[]
     },
   })
 }
@@ -62,7 +62,7 @@ export function useAsset(id: string) {
         .single()
 
       if (error) throw error
-      return data
+      return data as unknown as AssetWithFiles
     },
     enabled: !!id,
   })
@@ -75,11 +75,11 @@ export function useCreateAsset() {
     mutationFn: async (input: CreateAssetInput): Promise<Asset> => {
       const { data, error } = await supabase
         .from('assets')
-        .insert(input)
+        .insert(input as any)
         .select()
         .single()
       if (error) throw error
-      return data
+      return data as unknown as Asset
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: assetKeys.all })
@@ -94,12 +94,12 @@ export function useUpdateAsset(id: string) {
     mutationFn: async (input: UpdateAssetInput): Promise<Asset> => {
       const { data, error } = await supabase
         .from('assets')
-        .update(input)
+        .update(input as any)
         .eq('id', id)
         .select()
         .single()
       if (error) throw error
-      return data
+      return data as unknown as Asset
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: assetKeys.all })
@@ -115,7 +115,7 @@ export function useDeleteAsset() {
     mutationFn: async (id: string): Promise<void> => {
       const { error } = await supabase
         .from('assets')
-        .update({ deleted_at: new Date().toISOString() })
+        .update({ deleted_at: new Date().toISOString() } as any)
         .eq('id', id)
       if (error) throw error
     },
@@ -169,14 +169,14 @@ export function useUploadAssetFile() {
           file_type: fileType,
           file_size: file.size,
           is_main:   isMain,
-        })
+        } as any)
       if (dbError) throw dbError
 
       // If main image, update asset
       if (isMain) {
         await supabase
           .from('assets')
-          .update({ main_image_url: urlData.publicUrl })
+          .update({ main_image_url: urlData.publicUrl } as any)
           .eq('id', assetId)
       }
 

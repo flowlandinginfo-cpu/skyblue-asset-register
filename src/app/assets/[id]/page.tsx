@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, use } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -14,12 +14,13 @@ import { formatCurrency, formatDateThai, calculateBookValue } from '@/lib/utils/
 import { ASSET_CATEGORY_LABELS } from '@/types/asset'
 import type { AssetFile } from '@/types/asset'
 
-export default function AssetDetailPage({ params }: { params: { id: string } }) {
+export default function AssetDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const [showDelete, setShowDelete] = useState(false)
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null)
 
-  const { data: asset, isLoading, isError } = useAsset(params.id)
+  const { data: asset, isLoading, isError } = useAsset(id)
   const deleteAsset = useDeleteAsset()
   const deleteFile  = useDeleteAssetFile()
 
