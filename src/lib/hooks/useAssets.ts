@@ -94,7 +94,8 @@ export function useUpdateAsset(id: string) {
     mutationFn: async (input: UpdateAssetInput): Promise<Asset> => {
       const { data, error } = await supabase
         .from('assets')
-        .update(input as any)
+        // @ts-ignore — Supabase client without DB type generics
+        .update(input)
         .eq('id', id)
         .select()
         .single()
@@ -115,7 +116,8 @@ export function useDeleteAsset() {
     mutationFn: async (id: string): Promise<void> => {
       const { error } = await supabase
         .from('assets')
-        .update({ deleted_at: new Date().toISOString() } as any)
+        // @ts-ignore — Supabase client without DB type generics
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', id)
       if (error) throw error
     },
@@ -176,7 +178,8 @@ export function useUploadAssetFile() {
       if (isMain) {
         await supabase
           .from('assets')
-          .update({ main_image_url: urlData.publicUrl } as any)
+          // @ts-ignore — Supabase client without DB type generics
+          .update({ main_image_url: urlData.publicUrl })
           .eq('id', assetId)
       }
 
