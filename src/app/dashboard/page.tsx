@@ -1,14 +1,14 @@
 'use client'
 
 import { useAssets } from '@/lib/hooks/useAssets'
-import { Spinner } from '@/components/ui/Spinner'
+import { DashboardSkeleton } from '@/components/ui/Skeleton'
 import { Package, CheckCircle, Wrench, XCircle, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 
 export default function DashboardPage() {
   const { data: assets = [], isLoading } = useAssets({})
 
-  if (isLoading) return <Spinner />
+  if (isLoading) return <DashboardSkeleton />
 
   const total    = assets.length
   const active   = assets.filter(a => a.status === 'active').length
