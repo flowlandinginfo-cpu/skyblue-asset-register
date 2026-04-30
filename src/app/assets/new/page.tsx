@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { AssetForm } from '@/components/forms/AssetForm'
 import { useCreateAsset, useUploadAssetFile } from '@/lib/hooks/useAssets'
-import { createClient } from '@/lib/supabase/client'
 import type { AssetFormData } from '@/types/asset'
 import { useState } from 'react'
 
@@ -65,7 +64,7 @@ export default function NewAssetPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
+        <div className="px-8 py-4 flex items-center gap-4">
           <Link href="/assets" className="text-gray-500 hover:text-gray-700">
             <ArrowLeft size={20} />
           </Link>
@@ -76,7 +75,7 @@ export default function NewAssetPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="px-8 py-8 max-w-5xl">
         {error && (
           <div className="mb-5 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
             ⚠️ {error}

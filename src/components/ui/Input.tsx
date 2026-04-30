@@ -1,21 +1,25 @@
 import { forwardRef } from 'react'
 import clsx from 'clsx'
+import { FieldTooltip } from './Tooltip'
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?:   string
-  error?:   string
-  helper?:  string
+  label?:    string
+  error?:    string
+  helper?:   string
   required?: boolean
+  tooltip?:  string
+  tooltipExample?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, helper, required, className, ...props }, ref) => {
+  ({ label, error, helper, required, tooltip, tooltipExample, className, ...props }, ref) => {
     return (
       <div className="w-full">
         {label && (
-          <label className="field-label">
+          <label className="field-label flex items-center">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
+            {tooltip && <FieldTooltip content={tooltip} example={tooltipExample} />}
           </label>
         )}
         <input

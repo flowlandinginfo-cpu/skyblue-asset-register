@@ -1,5 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import { Input } from '@/components/ui/Input'
+import { FieldTooltip } from '@/components/ui/Tooltip'
 import type { AssetSchema } from '@/lib/hooks/useAssetForm'
 
 export function Step2Financial() {
@@ -22,6 +23,8 @@ export function Step2Financial() {
         label="วันที่ซื้อ / Purchase Date"
         type="date"
         error={errors.purchase_date?.message}
+        tooltip="วันที่ซื้อหรือได้รับสินทรัพย์ ใช้คำนวณค่าเสื่อมราคา"
+        tooltipExample="2024-01-15"
         {...register('purchase_date')}
       />
 
@@ -33,6 +36,8 @@ export function Step2Financial() {
         placeholder="เช่น 1200000"
         error={errors.purchase_cost?.message}
         helper="ใส่ราคาเต็ม ไม่ต้องใส่เครื่องหมายจุลภาค"
+        tooltip="ราคาซื้อรวม VAT (ถ้ามี) ไม่ต้องใส่เครื่องหมายคอมม่า ระบบจัดรูปแบบให้"
+        tooltipExample="1200000"
         {...register('purchase_cost')}
       />
 
@@ -44,8 +49,12 @@ export function Step2Financial() {
           className="w-5 h-5 rounded text-skyblue-600 cursor-pointer"
           {...register('depreciable')}
         />
-        <label htmlFor="depreciable" className="text-base font-medium text-gray-700 cursor-pointer">
+        <label htmlFor="depreciable" className="text-base font-medium text-gray-700 cursor-pointer flex items-center">
           คิดค่าเสื่อมราคา (Depreciation)
+          <FieldTooltip
+            content="ติ๊กถ้าสินทรัพย์นี้ต้องคิดค่าเสื่อมราคา สินทรัพย์ที่ไม่คิด เช่น ที่ดิน"
+            example="รถ ✅ คิด, ที่ดิน ❌ ไม่คิด"
+          />
         </label>
       </div>
 
@@ -59,6 +68,8 @@ export function Step2Financial() {
               min={0}
               placeholder="เช่น 120000"
               error={errors.salvage_value?.message}
+              tooltip="มูลค่าที่คาดว่าจะเหลือเมื่อหมดอายุใช้งาน เช่น ขายเป็นเศษเหล็กได้เท่าไหร่"
+              tooltipExample="120,000 (10% ของราคาซื้อ)"
               {...register('salvage_value')}
             />
             <Input
@@ -68,6 +79,8 @@ export function Step2Financial() {
               max={50}
               placeholder="เช่น 10"
               error={errors.useful_life_years?.message}
+              tooltip="จำนวนปีที่คาดว่าจะใช้งานได้ ตามมาตรฐานบัญชี: รถ 5-10 ปี, อาคาร 20 ปี, คอมพิวเตอร์ 3-5 ปี"
+              tooltipExample="10 (สำหรับรถหนัก)"
               {...register('useful_life_years')}
             />
           </div>

@@ -40,6 +40,8 @@ export function Step1Basic() {
         required
         error={errors.asset_name?.message}
         helper="ใส่ชื่อภาษาไทยก่อน ตามด้วยชื่อภาษาอังกฤษหรือรุ่น"
+        tooltip="ใส่ชื่อเรียกสินทรัพย์ที่คนในบริษัทเข้าใจ ควรระบุยี่ห้อและรุ่นด้วย"
+        tooltipExample="รถแบคโฮ Komatsu PC200-8"
         {...register('asset_name')}
       />
 
@@ -52,6 +54,8 @@ export function Step1Basic() {
           value: v, label: l,
         }))}
         error={errors.asset_category?.message}
+        tooltip="เลือกหมวดหมู่ที่ตรงกับสินทรัพย์ ระบบจะสร้าง prefix รหัสให้อัตโนมัติ เช่น เลือก ยานพาหนะ → SKB-VEH"
+        tooltipExample="ยานพาหนะ, เครื่องจักร, อุปกรณ์ IT"
         {...register('asset_category', {
           onChange: e => onCategoryChange(e.target.value),
         })}
@@ -64,6 +68,8 @@ export function Step1Basic() {
         required
         error={errors.asset_code?.message}
         helper="รูปแบบ: SKB-{ประเภท}-{ลำดับ} — ระบบเติม prefix ให้อัตโนมัติ"
+        tooltip="รหัสเฉพาะของสินทรัพย์ ใช้สำหรับอ้างอิงและติดแท็ก ห้ามซ้ำกัน"
+        tooltipExample="SKB-VEH-001, SKB-MAC-003"
         {...register('asset_code')}
       />
 
@@ -75,6 +81,8 @@ export function Step1Basic() {
           min={1}
           required
           error={errors.quantity?.message}
+          tooltip="จำนวนของสินทรัพย์ชิ้นนี้ ปกติใส่ 1 ยกเว้นซื้อเป็นชุด"
+          tooltipExample="1"
           {...register('quantity')}
         />
         <Select
@@ -82,6 +90,8 @@ export function Step1Basic() {
           required
           options={UNIT_OPTIONS}
           error={errors.unit?.message}
+          tooltip="หน่วยนับที่เหมาะกับสินทรัพย์ เช่น รถใช้ 'คัน', เครื่องจักรใช้ 'ตัว'"
+          tooltipExample="คัน, ตัว, ชิ้น"
           {...register('unit')}
         />
       </div>
@@ -91,6 +101,8 @@ export function Step1Basic() {
         label="รายละเอียดสั้น / Description"
         placeholder="เช่น รถขุดดินขนาดกลาง ใช้สำหรับงานขุดไซต์งาน"
         helper="ไม่เกิน 200 ตัวอักษร"
+        tooltip="อธิบายสินทรัพย์สั้นๆ เพื่อให้คนอื่นเข้าใจว่าคืออะไร ใช้ทำอะไร"
+        tooltipExample="รถขุดขนาด 20 ตัน ใช้งานไซต์เบตง"
         {...register('short_description')}
       />
     </div>

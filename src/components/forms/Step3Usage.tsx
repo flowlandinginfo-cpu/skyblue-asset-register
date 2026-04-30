@@ -10,12 +10,6 @@ const STATUS_OPTIONS = [
   { value: 'inactive', label: '🔴 เลิกใช้งาน' },
 ]
 
-const LOCATION_OPTIONS = [
-  { value: 'สำนักงานใหญ่',  label: 'สำนักงานใหญ่' },
-  { value: 'Betong Site',    label: 'Betong Site' },
-  { value: 'อื่นๆ',           label: 'อื่นๆ (กรอกเอง)' },
-]
-
 export function Step3Usage() {
   const { register, formState: { errors }, watch } = useFormContext<AssetSchema>()
   const category = watch('asset_category')
@@ -38,6 +32,8 @@ export function Step3Usage() {
         required
         options={STATUS_OPTIONS}
         error={errors.status?.message}
+        tooltip="สถานะปัจจุบันของสินทรัพย์: ใช้งานอยู่ = พร้อมใช้, ซ่อมบำรุง = กำลังซ่อม, เลิกใช้งาน = ไม่ใช้แล้ว"
+        tooltipExample="ใช้งานอยู่"
         {...register('status')}
       />
 
@@ -47,6 +43,8 @@ export function Step3Usage() {
         placeholder="เช่น สำนักงานใหญ่, Betong Site"
         error={errors.location?.message}
         helper="ระบุสถานที่หรือไซต์งานที่สินทรัพย์อยู่"
+        tooltip="ระบุสถานที่จริงที่สินทรัพย์อยู่ตอนนี้ อาจเป็นไซต์งาน หรือสำนักงาน"
+        tooltipExample="สำนักงานใหญ่ นราธิวาส, ไซต์เบตง"
         {...register('location')}
       />
 
@@ -56,6 +54,8 @@ export function Step3Usage() {
         placeholder="เช่น นายช่าง A, แผนกบัญชี"
         error={errors.custodian?.message}
         helper="ผู้ดูแลหรือผู้ใช้งานหลักของสินทรัพย์นี้"
+        tooltip="ชื่อบุคคลหรือแผนกที่ดูแลสินทรัพย์นี้ เพื่อให้ติดตามได้ว่าใครรับผิดชอบ"
+        tooltipExample="นายสมชาย (SB-010)"
         {...register('custodian')}
       />
 
@@ -63,6 +63,8 @@ export function Step3Usage() {
       <Input
         label="ผู้ขาย / Vendor Name"
         placeholder="เช่น บริษัท โตโยต้า จำกัด"
+        tooltip="ชื่อบริษัทหรือร้านที่ซื้อสินทรัพย์มา เพื่อติดต่อเรื่องรับประกันหรือซ่อม"
+        tooltipExample="บริษัท สยามคูโบต้า จำกัด"
         {...register('vendor_name')}
       />
 
@@ -72,6 +74,8 @@ export function Step3Usage() {
           label="เลขที่เอกสาร / Reference No."
           placeholder="เช่น INV-2024-001"
           helper="เลขที่ใบส่งของ / ใบแจ้งหนี้"
+          tooltip="เลขที่ใบเสร็จ ใบส่งของ หรือเอกสารอ้างอิงการซื้อ"
+          tooltipExample="INV-2024-001, PO-2024-015"
           {...register('reference_no')}
         />
         {/* Reference Asset No */}
@@ -79,6 +83,8 @@ export function Step3Usage() {
           label={refPlaceholder}
           placeholder={refPlaceholder}
           helper="ถ้าไม่มีใส่ '-' ได้"
+          tooltip="เลขทะเบียนของสินทรัพย์ เช่น ทะเบียนรถ, เลขโฉนดที่ดิน, Serial Number ของเครื่องจักร"
+          tooltipExample="กข-1234 นราธิวาส, SN-KPC200-2024"
           {...register('reference_asset_no')}
         />
       </div>
@@ -88,6 +94,8 @@ export function Step3Usage() {
         label="หมายเหตุ / Note"
         placeholder="ข้อมูลเพิ่มเติมที่ต้องการบันทึก..."
         rows={3}
+        tooltip="ข้อมูลเพิ่มเติมใดๆ ที่อยากบันทึกไว้ เช่น ประวัติซ่อม เงื่อนไขพิเศษ"
+        tooltipExample="ซ่อมเครื่องยนต์ครั้งใหญ่ มี.ค. 2024"
         {...register('note')}
       />
     </div>

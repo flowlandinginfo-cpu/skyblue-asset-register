@@ -1,5 +1,6 @@
 import { forwardRef } from 'react'
 import clsx from 'clsx'
+import { FieldTooltip } from './Tooltip'
 
 interface SelectOption {
   value: string
@@ -7,22 +8,25 @@ interface SelectOption {
 }
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  label?:    string
-  error?:    string
-  helper?:   string
-  options:   SelectOption[]
+  label?:       string
+  error?:       string
+  helper?:      string
+  options:      SelectOption[]
   placeholder?: string
-  required?: boolean
+  required?:    boolean
+  tooltip?:     string
+  tooltipExample?: string
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, error, helper, options, placeholder, required, className, ...props }, ref) => {
+  ({ label, error, helper, options, placeholder, required, tooltip, tooltipExample, className, ...props }, ref) => {
     return (
       <div className="w-full">
         {label && (
-          <label className="field-label">
+          <label className="field-label flex items-center">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
+            {tooltip && <FieldTooltip content={tooltip} example={tooltipExample} />}
           </label>
         )}
         <select

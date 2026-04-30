@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-// Redirect root to asset list
+// Redirect root to dashboard
 export default function HomePage() {
-  redirect('/assets')
+  redirect('/dashboard')
 }

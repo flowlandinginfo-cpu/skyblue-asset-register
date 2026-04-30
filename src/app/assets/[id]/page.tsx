@@ -4,12 +4,11 @@ import { useState, use } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Pencil, Trash2, FileText, ImageIcon, Calendar, MapPin, User, Building2, Hash } from 'lucide-react'
+import { ArrowLeft, Pencil, Trash2, FileText, Calendar, MapPin, User, Building2, Hash } from 'lucide-react'
 import { useAsset, useDeleteAsset, useDeleteAssetFile } from '@/lib/hooks/useAssets'
 import { AssetStatusBadge } from '@/components/assets/AssetStatusBadge'
 import { ConfirmDeleteModal } from '@/components/ui/Modal'
 import { Spinner } from '@/components/ui/Spinner'
-import { HelpPanel } from '@/components/layout/HelpPanel'
 import { formatCurrency, formatDateThai, calculateBookValue } from '@/lib/utils/formatters'
 import { ASSET_CATEGORY_LABELS } from '@/types/asset'
 import type { AssetFile } from '@/types/asset'
@@ -55,7 +54,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/assets" className="text-gray-500 hover:text-gray-700">
               <ArrowLeft size={20} />
@@ -81,8 +80,8 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className="px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl">
 
           {/* Left column */}
           <div className="lg:col-span-2 space-y-5">
@@ -197,20 +196,6 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
       </main>
-
-      <HelpPanel
-        title="รายละเอียดสินทรัพย์"
-        explanation="หน้านี้แสดงข้อมูลครบถ้วนของสินทรัพย์ รวมถึงรูปภาพ เอกสาร และมูลค่าทางบัญชี"
-        steps={[
-          'ดูสถานะปัจจุบันในกล่องด้านขวา',
-          'กด "แก้ไข" เพื่ออัปเดตข้อมูล',
-          'กดชื่อไฟล์ PDF เพื่อเปิดดูเอกสาร',
-          'มูลค่าตามบัญชีคำนวณแบบ Straight-line อัตโนมัติ',
-        ]}
-        faq={[
-          { q: 'มูลค่าตามบัญชีคำนวณยังไง?', a: 'ใช้ Straight-line: (ราคาซื้อ - มูลค่าซาก) / อายุใช้งาน × จำนวนปีที่ใช้แล้ว' },
-        ]}
-      />
 
       <ConfirmDeleteModal
         open={showDelete}
