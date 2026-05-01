@@ -7,7 +7,9 @@ import type {
   CreateAssetInput, UpdateAssetInput,
 } from '@/types/asset'
 
-const supabase = createClient()
+function getSupabase() {
+  return createClient()
+}
 
 // ─── Query Keys ───────────────────────────────────────────
 export const assetKeys = {
@@ -21,7 +23,7 @@ export function useAssets(filters: AssetFilters = {}) {
   return useQuery({
     queryKey: assetKeys.list(filters),
     queryFn: async (): Promise<Asset[]> => {
-      let query = supabase
+      let query = getSupabase()
         .from('assets')
         .select('*')
         .is('deleted_at', null)
@@ -54,7 +56,7 @@ export function useAsset(id: string) {
   return useQuery({
     queryKey: assetKeys.detail(id),
     queryFn: async (): Promise<AssetWithFiles> => {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('assets')
         .select('*, asset_files(*)')
         .eq('id', id)
@@ -73,7 +75,7 @@ export function useCreateAsset() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: async (input: CreateAssetInput): Promise<Asset> => {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('assets')
         .insert(input as any)
         .select()
@@ -92,7 +94,7 @@ export function useUpdateAsset(id: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: async (input: UpdateAssetInput): Promise<Asset> => {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('assets')
         // @ts-ignore — Supabase client without DB type generics
         .update(input)
@@ -114,7 +116,7 @@ export function useDeleteAsset() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
-      const { error } = await supabase
+      const { error } = await getSupabase()
         .from('assets')
         // @ts-ignore — Supabase client without DB type generics
         .update({ deleted_at: new Date().toISOString() })
@@ -145,12 +147,12 @@ export function useUploadAssetFile() {
       const path = `${assetId}/${Date.now()}.${ext}`
 
       // Upload to Supabase Storage
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await getSupabase().storage
         .from('asset-files')
         .upload(path, file)
       if (uploadError) throw uploadError
 
-      const { data: urlData } = supabase.storage
+      const { data: urlData } = getSupabase().storage
         .from('asset-files')
         .getPublicUrl(path)
 
@@ -162,7 +164,7 @@ export function useUploadAssetFile() {
         : 'document'
 
       // Save file record
-      const { error: dbError } = await supabase
+      const { error: dbError } = await getSupabase()
         .from('asset_files')
         .insert({
           asset_id:  assetId,
@@ -176,7 +178,7 @@ export function useUploadAssetFile() {
 
       // If main image, update asset
       if (isMain) {
-        await supabase
+        await getSupabase()
           .from('assets')
           // @ts-ignore — Supabase client without DB type generics
           .update({ main_image_url: urlData.publicUrl })
@@ -202,7 +204,7 @@ export function useDeleteAssetFile() {
       fileId: string
       assetId: string
     }) => {
-      const { error } = await supabase
+      const { error } = await getSupabase()
         .from('asset_files')
         .delete()
         .eq('id', fileId)

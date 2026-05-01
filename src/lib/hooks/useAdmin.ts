@@ -4,14 +4,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import type { Profile, ProfileStatus, UserRole } from '@/types/profile'
 
-const supabase = createClient()
+function getSupabase() {
+  return createClient()
+}
 
 // ─── List all profiles (admin) ───────────────────────────
 export function useAllProfiles(statusFilter?: ProfileStatus) {
   return useQuery({
     queryKey: ['admin', 'profiles', statusFilter],
     queryFn: async (): Promise<Profile[]> => {
-      let query = supabase
+      let query = getSupabase()
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false })
@@ -39,7 +41,7 @@ export function useUpdateProfileStatus() {
       userId: string
       status: ProfileStatus
     }) => {
-      const { error } = await supabase
+      const { error } = await getSupabase()
         .from('profiles')
         .update({ status, updated_at: new Date().toISOString() } as any)
         .eq('id', userId)
@@ -63,7 +65,7 @@ export function useUpdateUserRole() {
       userId: string
       role: UserRole
     }) => {
-      const { error } = await supabase
+      const { error } = await getSupabase()
         .from('profiles')
         .update({ role, updated_at: new Date().toISOString() } as any)
         .eq('id', userId)
