@@ -54,10 +54,13 @@ export function useProfile() {
 export function useSignUp() {
   return useMutation({
     mutationFn: async (formData: SignUpFormData) => {
-      // 1. Create auth user
+      // 1. Create auth user (emailRedirectTo points to Vercel, not localhost)
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       })
       if (authError) throw authError
       if (!authData.user) throw new Error('ไม่สามารถสร้างบัญชีได้')
