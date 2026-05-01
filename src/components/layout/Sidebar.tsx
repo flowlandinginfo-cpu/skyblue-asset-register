@@ -7,8 +7,6 @@ import {
   LayoutDashboard,
   Package,
   PlusCircle,
-  FileSpreadsheet,
-  Settings,
   ChevronLeft,
   ChevronRight,
   Building2,
@@ -23,8 +21,6 @@ const NAV_ITEMS = [
   { href: '/dashboard',   label: 'Dashboard',       icon: LayoutDashboard },
   { href: '/assets',      label: 'ทรัพย์สินทั้งหมด', icon: Package },
   { href: '/assets/new',  label: 'เพิ่มทรัพย์สิน',   icon: PlusCircle },
-  { href: '/export',      label: 'Excel Export',     icon: FileSpreadsheet },
-  { href: '/settings',    label: 'Settings',         icon: Settings },
 ]
 
 const ADMIN_ITEMS = [

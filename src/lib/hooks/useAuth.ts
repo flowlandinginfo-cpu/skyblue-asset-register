@@ -52,34 +52,49 @@ export function useProfile() {
 
 // ─── Sign Up ─────────────────────────────────────────────
 export function useSignUp() {
+  const qc = useQueryClient()
+
   return useMutation({
     mutationFn: async (formData: SignUpFormData) => {
-      // 1. Create auth user (emailRedirectTo points to Vercel, not localhost)
+      // 1. Create auth user with metadata
+      //    → DB trigger "on_auth_user_created" auto-creates profile + auto-confirms email
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            full_name: formData.full_name,
+            department: formData.department,
+            position: formData.position,
+          },
         },
       })
-      if (authError) throw authError
+      if (authError) {
+        if (authError.message.includes('already registered')) {
+          throw new Error('อีเมลนี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบแทน')
+        }
+        if (authError.message.includes('rate limit') || authError.message.includes('security purposes')) {
+          throw new Error('กรุณารอสักครู่แล้วลองใหม่อีกครั้ง')
+        }
+        throw authError
+      }
       if (!authData.user) throw new Error('ไม่สามารถสร้างบัญชีได้')
 
-      // 2. Create profile record
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          email: formData.email,
-          full_name: formData.full_name,
-          department: formData.department,
-          position: formData.position,
-          role: 'user',
-          status: 'pending',
-        } as any)
-      if (profileError) throw profileError
+      // 2. Auto sign-in (email was auto-confirmed by DB trigger)
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      })
+      if (signInError) {
+        // Signup succeeded but auto-login failed — user can sign in manually
+        return { ...authData, needsManualSignIn: true } as any
+      }
 
       return authData
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['auth'] })
+      qc.invalidateQueries({ queryKey: ['profile'] })
     },
   })
 }

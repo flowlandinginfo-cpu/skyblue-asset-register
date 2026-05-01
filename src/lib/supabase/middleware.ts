@@ -46,15 +46,23 @@ export async function updateSession(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
+    // No profile found → sign out and redirect to signup
+    if (!profile) {
+      await supabase.auth.signOut()
+      const url = request.nextUrl.clone()
+      url.pathname = '/signup'
+      return NextResponse.redirect(url)
+    }
+
     // Profile pending approval → redirect to /pending
-    if (profile && profile.status === 'pending') {
+    if (profile.status === 'pending') {
       const url = request.nextUrl.clone()
       url.pathname = '/pending'
       return NextResponse.redirect(url)
     }
 
     // Profile rejected → redirect to /login with error
-    if (profile && profile.status === 'rejected') {
+    if (profile.status === 'rejected') {
       await supabase.auth.signOut()
       const url = request.nextUrl.clone()
       url.pathname = '/login'
@@ -63,7 +71,7 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Admin pages → check role
-    if (pathname.startsWith('/admin') && profile?.role !== 'admin') {
+    if (pathname.startsWith('/admin') && profile.role !== 'admin') {
       const url = request.nextUrl.clone()
       url.pathname = '/dashboard'
       return NextResponse.redirect(url)

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Building2, Eye, EyeOff } from 'lucide-react'
+import { Building2, Eye, EyeOff, CheckCircle } from 'lucide-react'
 import { useSignUp } from '@/lib/hooks/useAuth'
 import { DEPARTMENTS } from '@/types/profile'
 import type { SignUpFormData } from '@/types/profile'
@@ -13,6 +13,7 @@ export default function SignUpPage() {
   const signUp = useSignUp()
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const [form, setForm] = useState<SignUpFormData>({
     email: '',
     password: '',
@@ -45,8 +46,13 @@ export default function SignUpPage() {
     }
 
     try {
-      await signUp.mutateAsync(form)
-      router.push('/pending')
+      const result = await signUp.mutateAsync(form)
+      // Check if auto-login succeeded or needs manual sign-in
+      if ((result as any)?.needsManualSignIn) {
+        setSuccess(true)
+      } else {
+        router.push('/pending')
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'เกิดข้อผิดพลาด กรุณาลองใหม่'
       setError(msg)
@@ -67,6 +73,26 @@ export default function SignUpPage() {
 
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 animate-slideUp">
+          {/* Success State */}
+          {success ? (
+            <div className="text-center py-6">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle size={32} className="text-green-600" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">ลงทะเบียนเรียบร้อยแล้ว!</h2>
+              <p className="text-gray-500 text-sm mb-6">
+                บัญชีของคุณถูกสร้างเรียบร้อยแล้ว<br />
+                กรุณารอ Admin อนุมัติก่อนจึงจะเข้าใช้งานระบบได้
+              </p>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center w-full btn-primary py-3 text-base"
+              >
+                ไปหน้าเข้าสู่ระบบ
+              </Link>
+            </div>
+          ) : (
+          <>
           <h2 className="text-lg font-semibold text-gray-900 mb-6">ลงทะเบียน</h2>
 
           {error && (
@@ -186,6 +212,8 @@ export default function SignUpPage() {
           <div className="mt-4 bg-skyblue-50 rounded-lg p-3 text-xs text-skyblue-700">
             <strong>หมายเหตุ:</strong> หลังสมัครแล้วต้องรอ Admin อนุมัติก่อนจึงจะเข้าใช้ระบบได้
           </div>
+          </>
+          )}
         </div>
       </div>
     </div>
